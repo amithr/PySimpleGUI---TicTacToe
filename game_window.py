@@ -23,14 +23,18 @@ def check_if_winner(board):
             return board[(2, 0)]        
 
 def initiate_game(players):
-    layout =  [[sg.Text(players[0]+' Starts First')]]
-    layout += [[sg.Button(size=(3,2), key=(row,col)) for col in range(3)] for row in range(3)]
-    # The key will be a tuple
-    layout += [[sg.Button('Reset'), sg.Button('Cancel')]]
+    board, player = {}, 0 # Keeps track of coordinates on the board that respective players have selected
+
+    layout =  [[sg.Text('Current Turn'+ players[player])]]
+    for row in range(3):
+        new_square_row = []
+        for col in range(3):
+            new_square_row += [sg.Button(size=(3,2), key=(row,col))]
+        layout.append(new_square_row)      
+    layout.append([sg.Button('Reset'), sg.Button('Cancel')])
 
     window = sg.Window('Window Title', layout, use_default_focus=False)
 
-    board, player = {}, 0 # Keeps track of coordinates on the board that respective players have selected
 
     while True:
         event, values = window.read()
