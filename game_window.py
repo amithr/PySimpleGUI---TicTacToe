@@ -23,39 +23,40 @@ def check_if_winner(board):
             return board[(2, 0)]        
 
 def initiate_game(players):
-    board, player = {}, 0 # Keeps track of coordinates on the board that respective players have selected
+    board, player = {}, 0
 
-    layout =  [[sg.Text('Current Turn'+ players[player])]]
+    layout = [[sg.Text('Current Player: ' + players[player], key='-CURRENT_PLAYER-')]]
     for row in range(3):
-        new_square_row = []
-        for col in range(3):
-            new_square_row += [sg.Button(size=(3,2), key=(row,col))]
-        layout.append(new_square_row)      
+        new_row = []
+        for column in range(3):
+            new_row.append(sg.Button(size=(3, 2), key=(row, column)))
+        layout.append(new_row)
     layout.append([sg.Button('Reset'), sg.Button('Cancel')])
 
-    window = sg.Window('Window Title', layout, use_default_focus=False)
-
-
+    window = sg.Window('TicTacToe', layout, use_default_focus=False)
     while True:
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Cancel':
             break
+        
         if event == 'Reset':
             board = {}
             for row in range(3):
                 for col in range(3):
                     window[(row, col)].update('')
+
         elif event not in board:
-            board[event] = player # Assigns a player number to each coordinate on the board
-            # Each event is a tuple containing coordinates from the board
-            window[event].update('X' if player else '0') # Checks if player is a 1 or 0
+            board[event] = player
+            window[event].update('X' if player else '0')
             is_winner = check_if_winner(board)
-            print(is_winner)
             if is_winner is not None:
-                sg.popup("The winner is "+players[player])
+                sg.popup("The winner is "+ players[player])
                 break
-            player = (player + 1) % 2 # Can switch between 1 and 0 in an alternating fashion
+            player = (player + 1) % 2
+            window['-CURRENT_PLAYER-'].update('Current player: ' + players[player])
+
     window.close()
+    
 
 
 
